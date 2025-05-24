@@ -1,0 +1,27 @@
+ python SDN/train.py \
+ --video_path datasets/UCF-101-JPG \
+ --annotation_path datasets/ucfTrainTestlist/ucf101_01.json \
+ --result_path models/train_run_1 \
+ --root_path /workspace \
+ --dataset ucf101 \
+ --n_classes 101 \
+ --n_finetune_classes 101 \
+ --model resnet \
+ --model_depth 18 \
+ --resnet_shortcut A \
+ --batch_size 256 \
+ --val_batch_size 16 \
+ --n_threads 16 \
+ --checkpoint 1 \
+ --ft_begin_index 0 \
+ --is_mask_adv \
+ --learning_rate 0.0032 \
+ --weight_decay 1e-5 \
+ --n_epochs 100 
+ 
+ EXTRA:
+ \
+ --pretrain_path models/transfer_learning/ucf101/3d-resnet-18_ucf101_split1_baseline.pth
+
+
+## models/transfer_learning/hmdb51/3d-resnet-18_hmdb51_split1_final_debiased.pth

@@ -4,3 +4,5 @@ models/train*
 .Trash*
 keys
 keys.pub
+masking/
+
