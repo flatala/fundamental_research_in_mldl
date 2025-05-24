@@ -19,12 +19,12 @@ python SDN/train.py \
 --no_val \
 --is_mask_adv \
 --annotation_path datasets/ucfTrainTestlist/ucf101_03.json \
---result_path models/test_run_ucf_101_debiased_split_3 \
---resume_path models/transfer_learning/ucf101/3d-resnet-18_ucf101_split3_final_debiased.pth
+--result_path models/test_run_ucf_101_baseline_split_3 \
+--resume_path models/transfer_learning/ucf101/3d-resnet-18_ucf101_split3_baseline.pth
 
 root@06bb45684c3d:/workspace/SDN# python -m utils.eval_ucf101 \
     --annotation_path /workspace/datasets/ucfTrainTestlist/ucf101_03.json \
-    --prediction_path /workspace/models/test_run_ucf_101_debiased_split_3/val.json
+    --prediction_path /workspace/models/test_run_ucf_101_baseline_split_3/val.json
 
 HMDB:
 
@@ -48,12 +48,12 @@ python SDN/train.py \
 --no_val \
 --is_mask_adv \
 --annotation_path datasets/testTrainMulti_7030_splits/hmdb51_3.json \
---result_path models/test_run_hmdb51_debiased_split_3 \
---resume_path models/transfer_learning/hmdb51/3d-resnet-18_hmdb51_split3_final_debiased.pth
+--result_path models/test_run_hmdb51_baseline_split_3 \
+--resume_path models/transfer_learning/hmdb51/3d-resnet-18_hmdb51_split3_baseline.pth
 
 root@06bb45684c3d:/workspace/SDN# python -m utils.eval_hmdb51 \
     --annotation_path /workspace/datasets/testTrainMulti_7030_splits/hmdb51_3.json \
-    --prediction_path /workspace/models/test_run_hmdb51_debiased_split_3/val.json
+    --prediction_path /workspace/models/test_run_hmdb51_baseline_split_3/val.json
 
 
 

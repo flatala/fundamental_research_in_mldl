@@ -6,3 +6,4 @@ keys
 keys.pub
 masking/
 masking/*
+/masking*

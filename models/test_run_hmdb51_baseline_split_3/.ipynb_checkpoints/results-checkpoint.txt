@@ -1,0 +1,9 @@
+root@b060572f9785:/workspace/SDN# python -m utils.eval_hmdb51 \
+>     --annotation_path /workspace/datasets/testTrainMulti_7030_splits/hmdb51_3.json \
+>     --prediction_path /workspace/models/test_run_hmdb51_baseline_split_3/val.json
+[INIT] Loaded annotations from validation subset.
+        Number of ground truth instances: 1530
+        Number of predictions: 15290
+[RESULTS] Performance on HMDB-51 video classification task.
+        Error@1: 0.4718954248366013
+0.5281045751633987
