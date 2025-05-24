@@ -1,6 +1,6 @@
 datasets/
 models/transfer_learning/
 models/train*
-
-
-
+.Trash*
+keys
+keys.pub
