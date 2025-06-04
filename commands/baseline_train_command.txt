@@ -26,6 +26,38 @@ python SDN/train.py \
 
 ## models/transfer_learning/hmdb51/3d-resnet-18_hmdb51_split1_final_debiased.pth
 
+## SCENE DEBIASING RUN
+
+python SDN/train.py \
+--video_path datasets/UCF-101-JPG \
+--annotation_path datasets/ucfTrainTestlist/ucf101_02.json \
+--result_path models/scene_adv_loss_ucf_101_base_fine_tuned_split_2_resnet_labels \
+--root_path /workspace \
+--dataset ucf101_adv \
+--n_classes 101 \
+--n_finetune_classes 101 \
+--model resnet \
+--model_depth 18 \
+--resnet_shortcut A \
+--batch_size 256 \
+--val_batch_size 16 \
+--n_threads 16 \
+--checkpoint 1 \
+--ft_begin_index 0 \
+--num_place_hidden_layers 3 \
+--new_layer_lr 1e-2 \
+--learning_rate 0.0032 \
+--weight_decay 1e-5 \
+--warm_up_epochs 5 \
+--n_epochs 200 \
+--place_pred_path datasets/scene_labels/ \
+--is_place_adv \
+--is_place_soft \
+--alpha 1.0 \
+--is_mask_adv \
+--num_places_classes 365 \
+--pretrain_path models/transfer_learning/ucf101/3d-resnet-18_ucf101_split1_baseline.pth
+
 USe entropy maximization loss for the ablation study:
 --is_place_entropy \
 --is_entropy_max \
@@ -58,7 +90,7 @@ python train.py \
 --warm_up_epochs 0 \
 --weight_decay 1e-5 \
 --n_epochs 100 \
---place_pred_path <full path of your kinetics pseudo scene labels> \
+--place_pred_path datasets/scene_classification_results_resnet_18.json \
 --is_place_entropy \
 --is_entropy_max \
 --is_mask_entropy \
@@ -67,5 +99,5 @@ python train.py \
 --slower_place_mlp \
 --not_replace_last_fc \
 --num_places_classes 365 \
---human_dets_path <full path of your kinetics human detections> \
+--human_dets_path <add_path_here> \
 --pretrain_path models/transfer_learning/ucf101/3d-resnet-18_ucf101_split1_baseline.pth

@@ -483,6 +483,7 @@
 import torch
 import time
 from tqdm import tqdm
+from pprint import pprint
 import os
 import sys
 import numpy as np
@@ -591,6 +592,7 @@ def train_adv_epoch(epoch, data_loader, model, criterions, optimizer, opt,
     place_accuracies = AverageMeter()
 
     end_time = time.time()
+    
     for i, (inputs, targets, places) in enumerate(tqdm(data_loader, desc="Batches"), 0):
     # for i, (inputs, targets, places) in enumerate(data_loader):
         data_time.update(time.time() - end_time)
