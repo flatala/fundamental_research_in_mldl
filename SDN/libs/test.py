@@ -14,7 +14,7 @@ import torch.nn.functional as F
 import time
 import os
 import json
-
+from tqdm import tqdm
 from libs.utils import AverageMeter
 
 def calculate_video_results(output_buffer, video_id, test_results, class_names):
@@ -51,7 +51,11 @@ def test(data_loader, model, opt, class_names):
 
             
             inputs = inputs.to(device)
-            outputs = model(inputs)
+
+            if opt.is_place_adv:
+                outputs, _ = model(inputs)
+            else:
+                outputs = model(inputs)
 
             if not opt.no_softmax_in_test:
                 outputs = F.softmax(outputs, dim=1)
@@ -80,6 +84,50 @@ def test(data_loader, model, opt, class_names):
     with open(os.path.join(opt.result_path, f'{opt.test_subset}.json'), 'w') as f:
         json.dump(test_results, f)
 
+
+def test_scene_accuracy(data_loader, model, opt):
+    import time
+    from torch.autograd import Variable
+    from libs.utils import AverageMeter, calculate_accuracy_pt_0_4
+
+    model.eval()
+    batch_time = AverageMeter()
+    place_accuracies = AverageMeter()
+
+    torch_version = float(torch.__version__[:3])
+    end_time = time.time()
+
+    for i, (inputs, targets, places) in tqdm(enumerate(data_loader)):
+        places = places.cuda(non_blocking=True)
+        if opt.model == 'vgg':
+            inputs = inputs.squeeze()
+
+        with torch.no_grad():
+            inputs = Variable(inputs)
+
+            # Get place output
+            if opt.is_place_adv:
+                _, outputs_place = model(inputs)
+            else:
+                print("ERROR: Model was not trained with is_place_adv=True.")
+                return
+
+            # Compute accuracy
+            if torch_version < 0.4:
+                place_acc = calculate_accuracy(outputs_place, places)
+            else:
+                place_acc = calculate_accuracy_pt_0_4(outputs_place, places)
+
+            place_accuracies.update(place_acc, inputs.size(0))
+
+        batch_time.update(time.time() - end_time)
+        end_time = time.time()
+
+        print('Test Batch: [{}/{}]\tTime {:.3f}\tScene Acc {:.3f} ({:.3f})'.format(
+            i + 1, len(data_loader), batch_time.val, place_accuracies.val, place_accuracies.avg))
+
+    print('===> Final Scene (Place) Classification Accuracy: {:.3f}%'.format(place_accuracies.avg * 100))
+    return place_accuracies.avg
 
 # # PyTorch 0.3
 # def calculate_video_results(output_buffer, video_id, test_results, class_names):
