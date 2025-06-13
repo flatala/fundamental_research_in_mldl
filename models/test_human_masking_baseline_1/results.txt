@@ -1,0 +1,9 @@
+root@f8b92a20e986:/workspace/SDN# python -m utils.eval_ucf101 \
+>     --annotation_path /workspace/datasets/ucfTrainTestlist/ucf101_01.json \
+>     --prediction_path /workspace/models/test_human_masking_baseline_1/val.json
+[INIT] Loaded annotations from validation subset.
+        Number of ground truth instances: 3783
+        Number of predictions: 37820
+[RESULTS] Performance on UCF101 video classification task.
+        Error@1: 0.007930214115781098
+0.9920697858842189

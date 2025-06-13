@@ -1,0 +1,6 @@
+[INIT] Loaded annotations from validation subset.
+        Number of ground truth instances: 3783
+        Number of predictions: 37820
+[RESULTS] Performance on UCF101 video classification task.
+        Error@1: 0.01242400211472372
+0.9875759978852763
