@@ -1,0 +1,9 @@
+root@e4cddae4f2b6:/workspace/SDN# python -m utils.eval_ucf101 \
+>     --annotation_path /workspace/datasets/ucfTrainTestlist/ucf101_02.json \
+>     --prediction_path /workspace/models/test_run_scene_resnet_pseudo_labeles_2/val.json
+[INIT] Loaded annotations from validation subset.
+        Number of ground truth instances: 3734
+        Number of predictions: 37330
+[RESULTS] Performance on UCF101 video classification task.
+        Error@1: 0.13738618103910016
+0.8626138189608998
