@@ -7,4 +7,3 @@ root@06bb45684c3d:/workspace/SDN# python -m utils.eval_hmdb51 \
 [RESULTS] Performance on HMDB-51 video classification task.
         Error@1: 0.4228758169934641
 0.5771241830065359
-root@06bb45684c3d:/wo
