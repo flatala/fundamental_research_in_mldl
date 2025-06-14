@@ -28,10 +28,12 @@ python SDN/train.py \
 
 ## SCENE DEBIASING RUN
 
+--is_place_soft  - dont use for now
+
 python SDN/train.py \
 --video_path datasets/UCF-101-JPG \
 --annotation_path datasets/ucfTrainTestlist/ucf101_02.json \
---result_path models/scene_adv_loss_ucf_101_base_fine_tuned_split_2_resnet_labels \
+--result_path models/scene_adv_loss_ucf_101_base_fine_tuned_split_2_resnet_labels_entropy_loss \
 --root_path /workspace \
 --dataset ucf101_adv \
 --n_classes 101 \
@@ -49,10 +51,11 @@ python SDN/train.py \
 --learning_rate 0.0032 \
 --weight_decay 1e-5 \
 --warm_up_epochs 5 \
---n_epochs 200 \
---place_pred_path datasets/scene_labels/ \
+--n_epochs 80 \
+--place_pred_path datasets/scene_labels_resnet/ \
 --is_place_adv \
---is_place_soft \
+--is_place_entropy \
+--is_entropy_max \
 --alpha 1.0 \
 --is_mask_adv \
 --num_places_classes 365 \

@@ -4,6 +4,11 @@ UCF:
 python SDN/train.py \
 --dataset ucf101 \
 --root_path /workspace \
+--is_place_adv \
+--is_place_entropy \
+--is_entropy_max \
+--alpha 1.0 \
+--is_mask_adv \
 --video_path datasets/UCF-101-JPG \
 --n_finetune_classes 101 \
 --n_classes 101 \
@@ -11,20 +16,77 @@ python SDN/train.py \
 --model_depth 18 \
 --resnet_shortcut A \
 --batch_size 32 \
+--no_softmax_in_test \
 --val_batch_size 16 \
+--adv_test_type action \
 --n_threads 4 \
 --test \
 --test_subset val \
+--num_places_classes 365 \
+--num_place_hidden_layers 3 \
 --no_train \
 --no_val \
 --is_mask_adv \
---annotation_path datasets/ucfTrainTestlist/ucf101_03.json \
---result_path models/test_run_ucf_101_baseline_split_3 \
---resume_path models/transfer_learning/ucf101/3d-resnet-18_ucf101_split3_baseline.pth
+--annotation_path datasets/ucfTrainTestlist/ucf101_01.json \
+--result_path models/test_run_ucf_101_split_1_resnet_llm_adv_loss \
+--resume_path models/scene_adv_loss_ucf_101_base_fine_tuned_split_2_llm_labels/save_80.pth
 
 root@06bb45684c3d:/workspace/SDN# python -m utils.eval_ucf101 \
-    --annotation_path /workspace/datasets/ucfTrainTestlist/ucf101_03.json \
-    --prediction_path /workspace/models/test_run_ucf_101_baseline_split_3/val.json
+    --annotation_path /workspace/datasets/ucfTrainTestlist/ucf101_02.json \
+    --prediction_path /workspace/models/test_runs_scene_adverserial/test_run_scene_resent_pseudo_labeles_entropy_loss_2/val.json
+
+SCENE TEST:
+
+python SDN/train.py \
+--no_train \
+--no_val \
+--dataset ucf101_adv \
+--is_place_adv \
+--is_mask_adv \
+--annotation_path datasets/ucfTrainTestlist/ucf101_02.json \
+--root_path /workspace \
+--video_path datasets/UCF-101-JPG \
+--n_finetune_classes 101 \
+--n_classes 101 \
+--model resnet \
+--model_depth 18 \
+--resnet_shortcut A \
+--batch_size 32 \
+--num_places_classes 365 \
+--num_place_hidden_layers 3 \
+--val_batch_size 16 \
+--n_threads 4 \
+--test \
+--adv_test_type action \
+--test_subset test \
+--place_pred_path datasets/scene_labels_resnet/ \
+--result_path models/test_run_scene_resnet_pseudo_labeles_2 \
+--pretrain_path models/scene_adv_loss_ucf_101_base_fine_tuned_split_2_resnet_labels/save_80.pth
+
+python SDN/train.py \
+--no_train \
+--no_val \
+--dataset ucf101 \
+--is_place_adv \
+--annotation_path datasets/ucfTrainTestlist/ucf101_02.json \
+--root_path /workspace \
+--video_path datasets/UCF-101-JPG \
+--n_finetune_classes 101 \
+--n_classes 101 \
+--model resnet \
+--model_depth 18 \
+--resnet_shortcut A \
+--batch_size 32 \
+--num_places_classes 365 \
+--num_place_hidden_layers 3 \
+--val_batch_size 16 \
+--n_threads 4 \
+--test \
+--adv_test_type action \
+--test_subset val \
+--place_pred_path datasets/scene_labels_resnet/ \
+--result_path models/test_runs_scene_adverserial/test_run_scene_resent_pseudo_labeles_entropy_loss_2 \
+--pretrain_path models/scene_adv_loss_ucf_101_base_fine_tuned_split_2_resnet_labels_entropy_loss/save_80.pth
 
 HMDB:
 
