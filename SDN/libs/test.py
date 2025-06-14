@@ -52,7 +52,9 @@ def test(data_loader, model, opt, class_names):
             
             inputs = inputs.to(device)
 
-            if opt.is_place_adv:
+            if opt.is_place_adv and opt.is_mask_adv:
+                outputs, _, _ = model(inputs)
+            elif opt.is_place_adv:
                 outputs, _ = model(inputs)
             else:
                 outputs = model(inputs)
@@ -83,6 +85,7 @@ def test(data_loader, model, opt, class_names):
 
     with open(os.path.join(opt.result_path, f'{opt.test_subset}.json'), 'w') as f:
         json.dump(test_results, f)
+
 
 
 def test_scene_accuracy(data_loader, model, opt):

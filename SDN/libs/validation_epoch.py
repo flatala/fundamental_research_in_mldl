@@ -610,12 +610,11 @@ def val_adv_msk_epoch(epoch, data_loaders, model, criterions, opt, logger, tb_wr
         end_time = time.time()
 
     # Logging
-    logger.log({
-        'epoch': epoch,
-        'loss total': losses.avg,
+    logger.log({'epoch': epoch, 'loss total': losses.avg,
+        'loss act': act_losses.avg,
+        'loss place': place_losses.avg,
         'acc act': act_accuracies.avg,
-        'acc place': place_accuracies.avg
-    })
+        'acc place': place_accuracies.avg})
 
     print(
         f"Epoch: {epoch}\n"

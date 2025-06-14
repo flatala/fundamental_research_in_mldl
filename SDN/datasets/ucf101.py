@@ -1,6 +1,6 @@
 import torch
 import torch.utils.data as data
-from PIL import Image
+from PIL import Image, ImageDraw, ImageStat
 import os
 import math
 import functools
@@ -327,7 +327,7 @@ class UCF101_adv(data.Dataset):
         tag = 'train' if 'train' in subset else 'val'
 
         self.place_pred = {}
-        
+        print(f'place_pred_path: {place_pred_path}')
         pp_files = gb.glob(os.path.join(place_pred_path, f'*{tag}*.npy'))
         print(f'len_pp_files: {len(pp_files)}')
         for f in pp_files:

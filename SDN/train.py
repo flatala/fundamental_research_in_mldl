@@ -21,7 +21,7 @@ from datasets.dataset import get_training_set, get_validation_set, get_test_set
 from libs.utils import Logger, AverageMeter
 from libs.train_epoch import train_adv_msk_epoch, train_adv_epoch, train_epoch
 from libs.validation_epoch import val_adv_msk_epoch, val_adv_epoch, val_epoch
-from libs.test import test
+from libs.test import test, test_scene_accuracy
 import time
 from loss.hloss import HLoss
 from loss.soft_cross_entropy import SoftCrossEntropy
@@ -155,7 +155,7 @@ def main_baseline_model(opt):
     val_btime_avg = AverageMeter()
     val_dtime_avg = AverageMeter()
     for i in range(opt.begin_epoch, opt.n_epochs + 1):      
-        if opt.dataset in ['kinetics_adv', 'kinetics_bkgmsk', 'kinetics_adv_msk']:  
+        if opt.dataset in ['kinetics_adv', 'kinetics_bkgmsk', 'kinetics_adv_msk', 'ucf101_adv', 'ucf101_bkgmsk', 'ucf101_adv_msk']:  
             if i < opt.warm_up_epochs:
                 optimizer = first_optimizer
                 scheduler = first_scheduler
@@ -322,23 +322,24 @@ def main_sdn_place_adv_model(opt):
         if not opt.no_train:
             optimizer.load_state_dict(checkpoint['optimizer'])
 
-    print('run')
-    for i in range(opt.begin_epoch, opt.n_epochs + 1):
-        if i < opt.warm_up_epochs:
-            optimizer = first_optimizer
-            scheduler = first_scheduler
-        else:
-            optimizer = second_optimizer
-            scheduler = second_scheduler
-        if not opt.no_train:
-            train_adv_epoch(i, train_loader, model, criterions, optimizer, opt,
-                        train_logger, train_batch_logger, opt.warm_up_epochs)
-        if not opt.no_val:
-            validation_loss = val_adv_epoch(i, val_loader, model, criterions, opt, val_logger)
-
-        if not opt.no_train and not opt.no_val:
-            scheduler.step(validation_loss)
-        sys.stdout.flush()
+    if not opt.no_train:
+        print('run')
+        for i in range(opt.begin_epoch, opt.n_epochs + 1):
+            if i < opt.warm_up_epochs:
+                optimizer = first_optimizer
+                scheduler = first_scheduler
+            else:
+                optimizer = second_optimizer
+                scheduler = second_scheduler
+            if not opt.no_train:
+                train_adv_epoch(i, train_loader, model, criterions, optimizer, opt,
+                            train_logger, train_batch_logger, opt.warm_up_epochs)
+            if not opt.no_val:
+                validation_loss = val_adv_epoch(i, val_loader, model, criterions, opt, val_logger)
+    
+            if not opt.no_train and not opt.no_val:
+                scheduler.step(validation_loss)
+            sys.stdout.flush()
     
     if opt.test:
         spatial_transform = Compose([
@@ -351,13 +352,20 @@ def main_sdn_place_adv_model(opt):
 
         test_data = get_test_set(opt, spatial_transform, temporal_transform,
                                  target_transform)
+        
         test_loader = torch.utils.data.DataLoader(
             test_data,
             batch_size=opt.val_batch_size,
             shuffle=False,
             num_workers=opt.n_threads,
             pin_memory=True)
-        test(test_loader, model, opt, test_data.class_names)
+
+        if opt.adv_test_type == 'action':       
+            test(test_loader, model, opt, test_data.class_names)
+        elif opt.adv_test_type == 'scene':
+            test_scene_accuracy(test_loader, model, opt)
+        else:
+            raise Exception("huj")
 
 def main_sdn_full_model(opt):
     torch.manual_seed(opt.manual_seed)
@@ -506,36 +514,37 @@ def main_sdn_full_model(opt):
         if not opt.no_train:
             optimizer.load_state_dict(checkpoint['optimizer'])
 
-    print('run')
-    for i in range(opt.begin_epoch, opt.n_epochs + 1):
-        if i < opt.warm_up_epochs:
-            optimizer = first_optimizer
-            scheduler = first_scheduler
-        else:
-            optimizer = second_optimizer
-            scheduler = second_scheduler
-        if not opt.no_train:
-            if not opt.is_mask_adv:
-                if i < opt.warm_up_epochs:
-                    train_adv_epoch(i, train_loaders[0], model, criterions, optimizer, opt,
-                            train_logger, train_batch_logger, opt.warm_up_epochs)       
+    if not opt.no_train:
+        print('run')
+        for i in range(opt.begin_epoch, opt.n_epochs + 1):
+            if i < opt.warm_up_epochs:
+                optimizer = first_optimizer
+                scheduler = first_scheduler
+            else:
+                optimizer = second_optimizer
+                scheduler = second_scheduler
+            if not opt.no_train:
+                if not opt.is_mask_adv:
+                    if i < opt.warm_up_epochs:
+                        train_adv_epoch(i, train_loaders[0], model, criterions, optimizer, opt,
+                                train_logger, train_batch_logger, opt.warm_up_epochs)       
+                    else:
+                        train_adv_msk_epoch(i, train_loaders, model, criterions, optimizer, opt,
+                                    train_logger, train_batch_logger, opt.warm_up_epochs)
                 else:
                     train_adv_msk_epoch(i, train_loaders, model, criterions, optimizer, opt,
-                                train_logger, train_batch_logger, opt.warm_up_epochs)
-            else:
-                train_adv_msk_epoch(i, train_loaders, model, criterions, optimizer, opt,
-                                train_logger, train_batch_logger, opt.warm_up_epochs)
-        if not opt.no_val:
-            if not opt.is_mask_adv:
-                if i < opt.warm_up_epochs:
-                    validation_loss = val_adv_epoch(i, val_loaders[0], model, criterions, opt, val_logger)
+                                    train_logger, train_batch_logger, opt.warm_up_epochs)
+            if not opt.no_val:
+                if not opt.is_mask_adv:
+                    if i < opt.warm_up_epochs:
+                        validation_loss = val_adv_epoch(i, val_loaders[0], model, criterions, opt, val_logger)
+                    else:
+                        validation_loss = val_adv_msk_epoch(i, val_loaders, model, criterions, opt, val_logger)
                 else:
                     validation_loss = val_adv_msk_epoch(i, val_loaders, model, criterions, opt, val_logger)
-            else:
-                validation_loss = val_adv_msk_epoch(i, val_loaders, model, criterions, opt, val_logger)
-        if not opt.no_train and not opt.no_val:
-            scheduler.step(validation_loss)
-        sys.stdout.flush()
+            if not opt.no_train and not opt.no_val:
+                scheduler.step(validation_loss)
+            sys.stdout.flush()
     
     if opt.test:
         spatial_transform = Compose([

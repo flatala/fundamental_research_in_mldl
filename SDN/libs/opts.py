@@ -285,6 +285,15 @@ def parse_opts():
     parser.add_argument(
         '--test', action='store_true', help='If true, test is performed.')
     parser.set_defaults(test=False)
+
+    parser.add_argument(
+        '--adv_test_type',
+        default='action',
+        type=str,
+        help='Action classification vs scene classification test in adverserial setting.')
+    
+    parser.set_defaults(adv_test_type='action')
+    
     parser.add_argument(
         '--test_subset',
         default='val',

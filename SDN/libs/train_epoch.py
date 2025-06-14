@@ -613,6 +613,8 @@ def train_adv_epoch(epoch, data_loader, model, criterions, optimizer, opt,
         loss_act = criterions['action_cross_entropy'](outputs, targets)
 
         if opt.is_place_adv:
+            print("outputs_places shape:", outputs_places.shape)
+            print("places shape:", places.shape)
             loss_place = criterions['places_cross_entropy'](outputs_places, places)
             if opt.is_place_entropy and epoch >= warm_up_epochs:
                 loss_place_entropy = criterions['places_entropy'](outputs_places)
