@@ -10,3 +10,4 @@ masking/*
 models/human_*
 models/scene_*
 temp/
+human_dets/
