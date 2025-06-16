@@ -9,3 +9,4 @@ masking/*
 /masking*
 models/human_*
 models/scene_*
+temp/
