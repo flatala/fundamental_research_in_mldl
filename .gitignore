@@ -7,3 +7,5 @@ keys.pub
 masking/
 masking/*
 /masking*
+models/human_*
+models/scene_*
