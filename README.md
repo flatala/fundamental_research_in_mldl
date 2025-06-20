@@ -15,3 +15,4 @@ The updates include the following:
 - Original repo of the authors': [https://github.com/vt-vl-lab/SDN](https://github.com/vt-vl-lab/SDN) 
 - Docker image with updated dependencies: **flatala/mldl:latest** on dockerhub
 - Docker image with original (outdated) dependencies: **flatala/mldl:fl_public** on dockerhub
+- Final model checkpoints for ablation studies and the npy files for the human masks: [Zip on Google Drive](https://drive.google.com/file/d/1RcKNcPqMRa7ql-c2Mm9R0-dA0tLy2106/view?usp=sharing)
